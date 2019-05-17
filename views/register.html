@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, user-scalable=no">
+    <title>注册</title>
+    <link rel="stylesheet" href="/static/common/ydui/css/ydui.css"/>
+    <link rel="stylesheet" href="/static/common/iconfont/iconfont.css"/>
+    <link rel="stylesheet" href="/static/style/css/style.css"/>
+    <script src="/static/common/ydui/js/ydui.flexible.js"></script>
+</head>
+<body>
+<header class="m-navbar navbar-fixed">
+    <a href="#" class="navbar-item">
+        <i class="back-ico"></i>
+    </a>
+    <div class="navbar-center">
+        <span class="navbar-title">注册</span>
+    </div>
+    <div class="navbar-item navbar-item-text">
+        <a href="#">去登录</a>
+    </div>
+</header>
+<div class="page">
+    <div class="register">
+        <form action="">
+            <div class="m-cell m-cell-form">
+                <div class="cell-item">
+                    <div class="cell-left"><i class="cell-icon demo-icons-phone"></i></div>
+                    <div class="cell-right">
+                        <input type="number" id="username" class="cell-input" placeholder="请输入手机号码"
+                               autocomplete="off">
+                    </div>
+                </div>
+                <div class="cell-item">
+                    <div class="cell-left"><i class="cell-icon iconfont iconmima"></i></div>
+                    <div class="cell-right">
+                        <input type="password" id="newUserpwd" class="cell-input" placeholder="请输入密码"
+                               autocomplete="off">
+                    </div>
+                </div>
+                <div class="cell-item">
+                    <div class="cell-left"><i class="cell-icon iconfont iconmima"></i></div>
+                    <div class="cell-right">
+                        <input type="password" id="firmUserpwd" class="cell-input" placeholder="请确认密码"
+                               autocomplete="off">
+                    </div>
+                </div>
+                <div class="cell-item">
+                    <div class="cell-left"><i class="cell-icon iconfont iconmima"></i></div>
+                    <div class="cell-right">
+                        <input type="text" id="smsGrap" class="cell-input cell-input-code" placeholder="请输入验证码"
+                               autocomplete="off">
+                        <img src="style/images/code.jpg" class="img-print" id="smsGrapImg" alt="">
+                    </div>
+                </div>
+                <div class="cell-item">
+                    <div class="cell-left"><i class="cell-icon iconfont iconmima"></i></div>
+                    <div class="cell-right">
+                        <input type="text" id="smsVerify" class="cell-input cell-input-code" placeholder="请输入验证码">
+                        <a href="javascript:;" class="btn btn-warning" id="smsVerifyBtn">获取验证码</a>
+                    </div>
+                </div>
+            </div>
+            <button id="reginsterBtn" type="button" class="btn-block btn-primary">注册</button>
+        </form>
+    </div>
+</div>
+<script src="/static/common/js/jquery.min.js"></script>
+<script src="/static/common/ydui/js/ydui.js"></script>
+<script type="text/javascript">
+    var $getCode = $('#smsVerifyBtn');
+
+    var dialog = YDUI.dialog;
+    var phone = $("#username");
+    var newpwd = $("#newUserpwd");
+    var firmpwd = $("#firmUserpwd");
+    var smsimg = $("#smsGrap");
+    var smscode = $("#smsVerify");
+    var prv = {{.prv}};
+
+    var telReg = /^1[34578]\d{9}$/;
+    $("#reginsterBtn").click(function () {
+        // if (phone.val() == "") {
+        //     dialog.toast('手机号不能为空', 'none', 1000);
+        //     return false;
+        // } else if (!(telReg.test(phone.val()))) {
+        //     dialog.toast('手机号格式不正确', 'none', 1000);
+        //     return false;
+        // } else if (newpwd.val() == "") {
+        //     dialog.toast('密码不能为空', 'none', 1000);
+        //     return false;
+        // } else if (newpwd.val().length < 6) {
+        //     dialog.toast('至少6位数字或字母', 'none', 1000);
+        //     return false;
+        // } else if (firmpwd.val() != newpwd.val()) {
+        //     dialog.toast('两次密码不一致', 'none', 1000);
+        //     return false;
+        // } else if (smsimg.val() == "") {
+        //     dialog.toast('图片验证码不能为空', 'none', 1000);
+        //     return false;
+        // } else if (smsimg.val() != "123456") {
+        //     dialog.toast('图片验证码错误', 'none', 1000);
+        //     return false;
+        // } else if (smscode.val() == "") {
+        //     dialog.toast('短信验证码不能为空', 'none', 1000);
+        //     return false;
+        // } else if (smscode.val() != "123456") {
+        //     dialog.toast('短信验证码错误', 'none', 1000);
+        //     return false;
+        // } else {
+            $.ajax({
+                type: 'post',
+                data: {
+                    phone: phone.val(),
+                    newpwd: newpwd.val(),
+                    smsimg: smsimg.val(),
+                    smscode: smscode.val(),
+                    prv: prv
+                },
+                dataType: 'json',
+                url: 'http://127.0.0.1:8080/register',
+                success: function (res) {
+
+                }
+            });
+
+        //     dialog.toast('注册成功', 'none', function () {
+        //         /* 关闭后调用 */
+        //
+        //
+        //     });
+        //     return true;
+        // }
+    })
+
+    /* 定义参数 */
+    $getCode.sendCode({
+        disClass: 'btn-disabled',
+        secs: 60,
+        run: false,
+        runStr: '{%s}秒后重新获取',
+        resetStr: '重新获取验证码'
+    });
+
+    $getCode.on('click', function () {
+        /* ajax 成功发送验证码后调用【start】 */
+        YDUI.dialog.loading.open('发送中');
+        setTimeout(function () {
+            YDUI.dialog.loading.close();
+            $getCode.sendCode('start');
+            YDUI.dialog.toast('已发送', 'success', 1000);
+        }, 1000);
+    });
+</script>
+</body>
+
+</html>
