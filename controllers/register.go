@@ -19,7 +19,7 @@ type RegisterController struct {
 func (this *RegisterController) Get() {
 	this.Data["prv"] = 0
 	prv := this.Ctx.Input.Param(":id")
-	if len(prv) >= 0 {
+	if len(prv) > 0 {
 		//	orm.Debug = true
 		userModel := new(models.Users)
 		o := orm.NewOrm()
@@ -27,12 +27,11 @@ func (this *RegisterController) Get() {
 		user := models.Users{}
 		qs.Filter("UserId", prv).Limit(1).One(&user)
 		prv, _ := strconv.Atoi(prv) // 转化
-		fmt.Println(prv)
-		fmt.Println(user.UserId)
 		if prv == user.UserId && user.UserId != 0 {
 			this.Data["prv"] = user.UserId
 		}
 	}
+
 	this.TplName = "register.html"
 }
 
@@ -46,22 +45,29 @@ func (this *RegisterController) Post() {
 		Phone: phone, Newpwd: newpwd, Smsimg: smsimg, Smscode: smscode,
 	}
 	valid := validation.Validation{}
-	d, _ := valid.Valid(&valiData)
-	if !d {
-		var res helps.Statuss
+	valid.Valid(&valiData)
+	if valid.HasErrors() {
+		var error validations.Errors
+		validMsg := validations.RegisterMsg()
+		error.Code = validations.DefaultCode()
 		for _, err := range valid.Errors {
-			//log.Println(err.Key, err.Message)
-			res.Statuss = append(res.Statuss, helps.Status{Msg: err.Message});
+			error.Es = append(error.Es, validations.Error{Key: err.Key, Msg: validMsg[err.Key]})
 		}
-		res.CodeNum = 1
-		b, err := json.Marshal(res)
-		if err != nil {
-			fmt.Println(err)
-		}
-		fmt.Println(string(b))
-		this.Ctx.WriteString(string(b))
+		res, _ := json.Marshal(error)
+		this.Ctx.WriteString(string(res))
 		this.StopRun()
 	}
-	//this.Ctx.WriteString(helps.Suc(""))
-	//this.ServeJSON()
+	// 短信验证码
+	json := &helps.Status{}
+	code := this.GetSession(phone)
+	fmt.Println(code)
+	fmt.Println(smscode)
+	if code != smscode {
+		json.Code = 10000
+		json.Msg = SmsMsgError
+	}
+
+	this.Data["json"] = json
+	this.ServeJSON()
+	//this.StopRun()
 }

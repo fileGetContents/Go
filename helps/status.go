@@ -29,9 +29,8 @@ type Status struct {
 	Msg  string `json:"msg"`
 }
 
-
 type Statuss struct {
-	CodeNum int `json:"code_num"`
+	CodeNum int      `json:"code_num"`
 	Statuss []Status `json:"statuss"`
 }
 
@@ -42,6 +41,17 @@ func Suc(msg string) string {
 	}
 	var s Status
 	s.Msg, s.Code = msg, 0
+	r, _ := json.Marshal(s)
+	return string(r)
+}
+
+// 系统错误
+func Error(msg string) string {
+	if msg == "" {
+		msg = "系统异常"
+	}
+	var s Status
+	s.Msg, s.Code = msg, 10000
 	r, _ := json.Marshal(s)
 	return string(r)
 }

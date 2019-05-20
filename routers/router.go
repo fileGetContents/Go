@@ -11,4 +11,6 @@ func init() {
 
 	beego.Router("/register/?:id:int", &controllers.RegisterController{})
 
+
+	beego.Router("/external/sms/:phone:string", &controllers.ExternalController{}, "*:Sms")
 }
