@@ -9,8 +9,7 @@ import (
 )
 
 const PhoneRule = "^1[34578]\\d{9}$"
-const SmsMsgError  = "短信验证码错误"
-
+const SmsMsgError = "短信验证码错误"
 
 type ExternalController struct {
 	beego.Controller
@@ -38,3 +37,5 @@ func (this *ExternalController) Sms() {
 	this.Data["json"] = json
 	this.ServeJSON()
 }
+
+

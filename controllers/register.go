@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/validation"
@@ -10,6 +9,7 @@ import (
 	"quickstart/models"
 	"quickstart/validations"
 	"strconv"
+	"strings"
 )
 
 type RegisterController struct {
@@ -31,15 +31,20 @@ func (this *RegisterController) Get() {
 			this.Data["prv"] = user.UserId
 		}
 	}
-
 	this.TplName = "register.html"
 }
 
 func (this *RegisterController) Post() {
+
 	phone := this.GetString("phone")
 	newpwd := this.GetString("newpwd")
 	smsimg := this.GetString("smsimg")
 	smscode := this.GetString("smscode")
+	prv, err := this.GetInt("prv", 0)
+	if err != nil {
+		prv = 0
+	}
+	//fmt.Println(data.UserId)
 	// 数据验证
 	valiData := validations.Register{
 		Phone: phone, Newpwd: newpwd, Smsimg: smsimg, Smscode: smscode,
@@ -57,17 +62,51 @@ func (this *RegisterController) Post() {
 		this.Ctx.WriteString(string(res))
 		this.StopRun()
 	}
-	// 短信验证码
 	json := &helps.Status{}
-	code := this.GetSession(phone)
-	fmt.Println(code)
-	fmt.Println(smscode)
-	if code != smscode {
-		json.Code = 10000
-		json.Msg = SmsMsgError
+	////图形验证码
+	cap := this.GetSession("Capatcha")
+	if helps.VerfiyCaptcha(helps.NilToString(cap), smsimg) == false {
+		json.Code = 1000
+		json.Msg = "图形验证码错误"
+		this.Data["json"] = json
+		this.ServeJSON()
 	}
 
-	this.Data["json"] = json
-	this.ServeJSON()
-	//this.StopRun()
+	// 短信验证码
+	code := helps.AssertionToInt(this.GetSession(phone))
+	if !strings.EqualFold(strconv.Itoa(code), smscode) {
+		json.Code = 1000
+		json.Msg = "短信验证失败"
+		this.Data["json"] = json
+		this.ServeJSON()
+	}
+
+	//查询数据库
+	var UsersModel models.Users
+	b, _ := UsersModel.UserFindByUserPhone(phone)
+	if !b {
+		var user models.Users;
+		user.UserName = ""
+		user.UserPhone = phone
+		user.UserPassword = newpwd
+		user.UserSuperior = prv
+		bo, _ := UsersModel.UserAddUser(&user)
+		if bo {
+			json.Code = 0
+			json.Msg = ""
+			this.Data["json"] = json
+			this.ServeJSON()
+		} else {
+			json.Code = 1001
+			json.Msg = "注册失败"
+			this.Data["json"] = json
+			this.ServeJSON()
+		}
+	} else {
+		json.Code = 1000
+		json.Msg = "已存在该账号"
+		this.Data["json"] = json
+		this.ServeJSON()
+	}
+
 }

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, user-scalable=no">
+    <title>登录</title>
+    <link rel="stylesheet" href="/static/common/ydui/css/ydui.css"/>
+    <link rel="stylesheet" href="/static/common/iconfont/iconfont.css"/>
+    <link rel="stylesheet" href="/static/style/css/style.css"/>
+    <script src="/static/common/ydui/js/ydui.flexible.js"></script>
+</head>
+
+<body>
+
+<div class="page page-login">
+    <div class="login">
+        <form action="">
+            <div class="m-cell m-cell-form">
+                <div class="cell-item">
+                    <div class="cell-left"><i class="cell-icon demo-icons-phone"></i></div>
+                    <div class="cell-right">
+                        <input type="number" id="username" class="cell-input" placeholder="请输入手机号码"
+                               autocomplete="off">
+                    </div>
+                </div>
+                <div class="cell-item">
+                    <div class="cell-left"><i class="cell-icon iconfont iconmima"></i></div>
+                    <div class="cell-right">
+                        <input type="password" id="userpwd" class="cell-input" placeholder="请输入密码"
+                               autocomplete="off">
+                    </div>
+                </div>
+            </div>
+            <div class="m-cell m-cell-blue">
+                <div class="cell-item">
+                    <a href="" class="cell-left">忘记密码?</a>
+                    <a href="" class="cell-right">注册</a>
+                </div>
+            </div>
+            <button id="loginBtn" type="button" class="btn-block btn-primary">登录</button>
+        </form>
+    </div>
+</div>
+
+<script src="/static/common/js/jquery.min.js"></script>
+<script src="/static/common/ydui/js/ydui.js"></script>
+<script type="text/javascript">
+    $("#loginBtn").click(function () {
+        $.ajax({
+            type: 'post',
+            data: {
+                phone: $("#username").val(),
+                userpwd: $("#userpwd").val(),
+            },
+            dataType: 'json',
+            url: 'http://127.0.0.1:8080/user/loginpost',
+            success: function (res) {
+                console.log(res)
+            }, error: function () {
+
+            }
+        })
+    })
+</script>
+</body>
+
+</html>

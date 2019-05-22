@@ -6,7 +6,7 @@ type Error struct {
 }
 
 type Errors struct {
-	Code int `json:"code"`
+	Code int     `json:"code"`
 	Es   []Error `json:"es"`
 }
 

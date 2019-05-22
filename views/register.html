@@ -52,7 +52,7 @@
                     <div class="cell-right">
                         <input type="text" id="smsGrap" class="cell-input cell-input-code" placeholder="请输入验证码"
                                autocomplete="off">
-                        <img src="style/images/code.jpg" class="img-print" id="smsGrapImg" alt="">
+                        <img src="" class="img-print" id="smsGrapImg" alt="">
                     </div>
                 </div>
                 <div class="cell-item">
@@ -110,27 +110,31 @@
         //     dialog.toast('短信验证码错误', 'none', 1000);
         //     return false;
         // } else {
-            $.ajax({
-                type: 'post',
-                data: {
-                    phone: phone.val(),
-                    newpwd: newpwd.val(),
-                    smsimg: smsimg.val(),
-                    smscode: smscode.val(),
-                    prv: prv
-                },
-                dataType: 'json',
-                url: 'http://127.0.0.1:8080/register',
-                success: function (res) {
-
+        $.ajax({
+            type: 'post',
+            data: {
+                phone: phone.val(),
+                newpwd: newpwd.val(),
+                smsimg: smsimg.val(),
+                smscode: smscode.val(),
+                prv: prv
+            },
+            dataType: 'json',
+            url: 'http://127.0.0.1:8080/user/register',
+            success: function (res) {
+                if (res.code == 0) {
+                    dialog.toast('注册成功', 'none', 1000);
+                } else {
+                    dialog.toast('注册失败', 'none', 1000)
                 }
-            });
+            }
+        });
 
-        //     dialog.toast('注册成功', 'none', function () {
-        //         /* 关闭后调用 */
-        //
-        //
-        //     });
+        dialog.toast('注册成功', 'none', function () {
+            /* 关闭后调用 */
+
+
+        });
         //     return true;
         // }
     })
@@ -146,6 +150,10 @@
 
     $getCode.on('click', function () {
         /* ajax 成功发送验证码后调用【start】 */
+        $.ajax({
+            type: "get",
+            url: "http://127.0.0.1:8080/external/sms/" + $("#username").val()
+        });
         YDUI.dialog.loading.open('发送中');
         setTimeout(function () {
             YDUI.dialog.loading.close();
@@ -153,6 +161,25 @@
             YDUI.dialog.toast('已发送', 'success', 1000);
         }, 1000);
     });
+
+    function GetCapatcha() {
+        $.ajax({
+            type: 'get',
+            data: {},
+            url: 'http://127.0.0.1:8080/api/capatcha?id=' + Math.ceil(Math.random() * 10000),
+            success: function (data) {
+                $("#smsGrapImg").attr('src', data.msg);
+            },
+            error: function (data) {
+
+            }
+        })
+    }
+
+    $("#smsGrapImg").click(function () {
+        GetCapatcha()
+    });
+    GetCapatcha()
 </script>
 </body>
 
