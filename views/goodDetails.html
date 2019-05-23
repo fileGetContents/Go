@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0, user-scalable=no">
+    <title>详情</title>
+    <link rel="stylesheet" href="/static/common/ydui/css/ydui.css"/>
+    <link rel="stylesheet" href="/static/common/iconfont/iconfont.css"/>
+    <link rel="stylesheet" href="/static/common/css/swiper-4.4.1.min.css">
+    <link rel="stylesheet" href="/static/style/css/style.css"/>
+    <script src="/static/common/ydui/js/ydui.flexible.js"></script>
+</head>
+
+<body>
+
+<div class="page">
+
+    <div class="good-swiper">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                {{ range $k,$v := .images}}
+                <div class="swiper-slide">
+                    <img src="{{ $v}}" alt="">
+                </div>
+                {{ end }}
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </div>
+
+    <div class="good-wrapper">
+        <div class="good-item">
+            <div class="good-price"><em>¥</em>{{ .data.GoodPrice}}</div>
+        </div>
+        <div class="good-item">
+            <div class="good-title">{{.data.GoodTitle}}</div>
+        </div>
+    </div>
+
+    <div class="good-detail">
+        {{ str2html  .data.GoodText}}
+    </div>
+
+    <div class="footer-bar">
+        <a href="javascript:void(0)" class="footer-bar-buy">立即购买</a>
+    </div>
+</div>
+
+<script src="/static/common/js/jquery.min.js"></script>
+<script src="/static/common/ydui/js/ydui.js"></script>
+<script src="/static/common/js/swiper-4.4.1.min.js"></script>
+<script src="/static/style/js/details.js"></script>
+<script type="text/javascript">
+
+</script>
+
+</body>
+</html>
