@@ -20,7 +20,8 @@ func init() {
 	beego.Router("/api/capatcha", &controllers.ApiController{}, "*:Capatcha")     // 图形验证码
 	beego.Router("/api/valcaptcha", &controllers.ApiController{}, "*:ValCaptcha") // 验证图形验证
 
-	beego.Router("/good/details/:id:int", &controllers.GoodController{}, "get:Details")
-
+	beego.Router("/good/details/:id:int", &controllers.GoodController{}, "get:Details") //
+	beego.Router("/good/list", &controllers.GoodController{}, "get:List")
+	beego.Router("/good/list/post", &controllers.GoodController{}, "*:ListPost")
 
 }

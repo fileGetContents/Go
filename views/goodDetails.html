@@ -12,18 +12,16 @@
     <link rel="stylesheet" href="/static/style/css/style.css"/>
     <script src="/static/common/ydui/js/ydui.flexible.js"></script>
 </head>
-
 <body>
-
 <div class="page">
 
     <div class="good-swiper">
         <div class="swiper-container">
             <div class="swiper-wrapper">
                 {{ range $k,$v := .images}}
-                <div class="swiper-slide">
-                    <img src="{{ $v}}" alt="">
-                </div>
+                    <div class="swiper-slide">
+                        <img src="{{ $v}}" alt="">
+                    </div>
                 {{ end }}
             </div>
             <div class="swiper-pagination"></div>
@@ -49,6 +47,7 @@
 </div>
 
 <script src="/static/common/js/jquery.min.js"></script>
+str2html
 <script src="/static/common/ydui/js/ydui.js"></script>
 <script src="/static/common/js/swiper-4.4.1.min.js"></script>
 <script src="/static/style/js/details.js"></script>
